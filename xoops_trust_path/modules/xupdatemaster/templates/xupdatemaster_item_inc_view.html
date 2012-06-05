@@ -1,1 +1,5 @@
-<div class="xupdatemaster"><a href="<{xoops_cooluri dirname=$data->getDirname() dataname=$data->getDataname() data_id=$data->get($data->getPrimary())}>"><{$data->getShow('title')}></a> <{$data->getShow('posttime')|xoops_formattimestamp:m}></div>
+<div class="xupdatemaster">
+<a href="<{$xoops_url}>/modules/<{$data->getDirname()}>/index.php?action=ItemView&amp;item_id=<{$data->getShow('item_id')}>">
+<{$data->getShow('title')}></a>
+<{$data->getShow('posttime')|xoops_formattimestamp:m}>
+</div>

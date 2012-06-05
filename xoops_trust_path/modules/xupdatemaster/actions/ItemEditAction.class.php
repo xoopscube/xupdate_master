@@ -125,5 +125,18 @@ class Xupdatemaster_ItemEditAction extends Xupdatemaster_AbstractEditAction
 	}
 
 
+	/**
+	 * executeViewCancel
+	 *
+	 * @param	XCube_RenderTarget	&$render
+	 *
+	 * @return	void
+	 **/
+	public function executeViewCancel(/*** XCube_RenderTarget ***/ &$render)
+	{
+		$this->mRoot->mController->executeForward('./index.php?action=ItemList&store_id='.$this->mObject->get('store_id'));
+	}
+
+
 }
 ?>

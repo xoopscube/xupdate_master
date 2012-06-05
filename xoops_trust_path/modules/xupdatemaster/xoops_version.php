@@ -81,6 +81,7 @@ $modversion['templates'] = array(
         array('file' => '{dirname}_item_edit.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_EDIT),
         array('file' => '{dirname}_item_list.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_LIST),
         array('file' => '{dirname}_item_view.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_VIEW),
+        array('file' => '{dirname}_item_inc_view.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_VIEW),
 
 ##[/cubson:templates]
 );

@@ -7,7 +7,7 @@
     <{/foreach}>
   </ul>
 <{/if}>
-<form action="<{xoops_cooluri dirname=$dirname dataname=item action=edit}>" method="post">
+<form action="<{$xoops_url}>/modules/<{$dirname}>/index.php?action=ItemEdit" method="post">
   <dl class="edit">
 
   <{xoops_input type=hidden name=item_id value=$actionForm->get('item_id')}>

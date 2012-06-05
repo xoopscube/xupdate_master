@@ -29,7 +29,8 @@ class Xupdatemaster_ItemViewAction extends Xupdatemaster_AbstractViewAction
 	**/
 	protected function _getCatId()
 	{
-		return $this->mObject->get('category_id');
+	
+		return $this->mObject ? $this->mObject->get('category_id') : null ;
 	}
 
 
