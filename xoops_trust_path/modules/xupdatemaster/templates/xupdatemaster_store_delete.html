@@ -1,0 +1,27 @@
+<div class="xupdatemaster">
+<h1><{$smarty.const._MD_XUPDATEMASTER_LANG_STORE_DELETE}></h1>
+
+<div class="confirm"><{$smarty.const._MD_XUPDATEMASTER_MESSAGE_CONFIRM_DELETE}></div>
+
+<form action="<{xoops_cooluri dirname=$dirname dataname=store action=delete}>" method="post">
+  <dl class="edit">
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_STORE_ID}></dt>
+  <dd><{$object->getShow('store_id')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_TITLE}></dt>
+  <dd><{$object->getShow('title')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_CONTENTS}></dt>
+  <dd><{$object->getShow('contents')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_ADDON_URL}></dt>
+  <dd><{$object->getShow('addon_url')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_POSTTIME}></dt>
+  <dd><{$object->getShow('posttime')|xoops_formattimestamp:m}></dd>
+
+    <dd>
+      <{xoops_token form=$actionForm}>
+      <{xoops_input type=hidden name=store_id value=$actionForm->get('store_id')}>
+      <input type="submit" class="formButton" value="<{$smarty.const._DELETE}>"/>
+      <input type="submit" class="formButton" value="<{$smarty.const._CANCEL}>" name="_form_control_cancel"/>
+    </dd>
+  </dl>
+</form>
+</div>

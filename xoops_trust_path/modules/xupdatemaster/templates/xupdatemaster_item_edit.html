@@ -1,0 +1,51 @@
+<div class="xupdatemaster">
+<h1><{$smarty.const._MD_XUPDATEMASTER_LANG_ITEM_EDIT}></h1>
+<{if $actionForm->hasError()}>
+  <ul class="error">
+    <{foreach item=message from=$actionForm->getErrorMessages()}>
+      <li><{$message|xoops_escape}></li>
+    <{/foreach}>
+  </ul>
+<{/if}>
+<form action="<{xoops_cooluri dirname=$dirname dataname=item action=edit}>" method="post">
+  <dl class="edit">
+
+  <{xoops_input type=hidden name=item_id value=$actionForm->get('item_id')}>
+
+  <dt class="required"><{$smarty.const._MD_XUPDATEMASTER_LANG_TITLE}></dt>
+  <dd><{xoops_input type=text name=title value=$actionForm->get('title') size=40 maxlength=255 class="required"}></dd>
+
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_STORE_ID}></dt>
+  <dd><{xoops_input type=text name=store_id value=$actionForm->get('store_id') size=10}></dd>
+  <{if $accessController->getAccessControllerType()!='none'}>
+  <dt class="required"><{$smarty.const._MD_XUPDATEMASTER_LANG_CATEGORY_ID}></dt>
+  <dd><select name="category_id">
+    <{legacy_category_select tree=$accessController->getTree('post') selectedValue=$actionForm->get('category_id')}>
+  </select></dd>
+  <{else}>
+  <{xoops_input type="hidden" name="category_id" value="0"}>
+  <{/if}>
+
+
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_TARGET_KEY}></dt>
+  <dd><{xoops_input type=text name=target_key value=$actionForm->get('target_key') size=40 maxlength=60}></dd>
+
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_APPROVAL}></dt>
+  <dd><{xoops_input type=text name=approval value=$actionForm->get('approval') size=10}></dd>
+
+    <{if $tag_dirname}>
+    <dt><{$smarty.const._TAG}></dt>
+    <dd>
+      <{xoops_input type=text name=tags value=$actionForm->get('tags')}>
+      <{legacy_tag_select tDirname=$tag_dirname tags=$object->mTag}>
+    </dd>
+    <{/if}>
+    <dt></dt>
+    <dd>
+      <{xoops_token form=$actionForm}>
+      <input type="submit" value="<{$smarty.const._SUBMIT}>" />
+      <input type="submit" value="<{$smarty.const._CANCEL}>" name="_form_control_cancel" />
+    </dd>
+  </dl>
+</form>
+</div>

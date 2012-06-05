@@ -1,0 +1,29 @@
+<div class="xupdatemaster">
+<h1><{$smarty.const._MD_XUPDATEMASTER_LANG_ITEM_DELETE}></h1>
+
+<div class="confirm"><{$smarty.const._MD_XUPDATEMASTER_MESSAGE_CONFIRM_DELETE}></div>
+
+<form action="<{xoops_cooluri dirname=$dirname dataname=item action=delete}>" method="post">
+  <dl class="edit">
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_ITEM_ID}></dt>
+  <dd><{$object->getShow('item_id')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_TITLE}></dt>
+  <dd><{$object->getShow('title')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_UID}></dt>
+  <dd><{$object->getShow('uid')|xoops_user:user_name}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_CATEGORY_ID}></dt>
+  <dd><{$mainTitle|xoops_escape}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_TARGET_KEY}></dt>
+  <dd><{$object->getShow('target_key')}></dd>
+  <dt><{$smarty.const._MD_XUPDATEMASTER_LANG_POSTTIME}></dt>
+  <dd><{$object->getShow('posttime')|xoops_formattimestamp:m}></dd>
+
+    <dd>
+      <{xoops_token form=$actionForm}>
+      <{xoops_input type=hidden name=item_id value=$actionForm->get('item_id')}>
+      <input type="submit" class="formButton" value="<{$smarty.const._DELETE}>"/>
+      <input type="submit" class="formButton" value="<{$smarty.const._CANCEL}>" name="_form_control_cancel"/>
+    </dd>
+  </dl>
+</form>
+</div>
