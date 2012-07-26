@@ -137,6 +137,22 @@ class Xupdatemaster_ItemEditAction extends Xupdatemaster_AbstractEditAction
 		$this->mRoot->mController->executeForward('./index.php?action=ItemList&store_id='.$this->mObject->get('store_id'));
 	}
 
-
+	/**
+	 * _doExecute
+	 *
+	 * @param   void
+	 *
+	 * @return  Enum
+	 **/
+	protected function _doExecute()
+	{
+		if($this->mObjectHandler->insert($this->mObject))
+		{
+			$this->makeJsonCache();
+			return XUPDATE_MASTER_FRAME_VIEW_SUCCESS;
+		}
+	
+		return XUPDATE_MASTER_FRAME_VIEW_ERROR;
+	}
 }
 ?>

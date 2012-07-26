@@ -149,7 +149,7 @@ abstract class Xupdatemaster_AbstractEditAction extends Xupdatemaster_AbstractAc
     **/
     public function execute()
     {
-        if ($this->mObject == null)
+    	if ($this->mObject == null)
         {
             return XUPDATEMASTER_FRAME_VIEW_ERROR;
         }

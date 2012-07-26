@@ -13,4 +13,47 @@
   <dd><{$object->getShow('posttime')|xoops_formattimestamp:m}></dd>
 
 </dl>
+
+<{if count($item) > 0}>
+<div style="clear:both">
+  <{if $isAdmin}>
+  <form action="<{xoops_cooluri dirname=$dirname dataname=store action=view}>" method="post">
+  <{/if}>
+  <table class="outer" summary="">
+    <thead>
+      <tr>
+        <th>
+          <{$smarty.const._MD_XUPDATEMASTER_LANG_TARGET_KEY}>
+        </th>
+        <th>
+          <{$smarty.const._MD_XUPDATEMASTER_LANG_ADDON_URL}>
+        </th>
+        <th>
+          <{$smarty.const._MD_XUPDATEMASTER_LANG_APPROVAL}>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <{foreach item=obj from=$item}>
+        <tr class="<{cycle values='odd,even'}>">
+          <td><{$obj->getShow('target_key')}></td>
+          <td><{$obj->getShow('addon_url')}></td>
+          <td><{if $isAdmin}><input type="checkbox" name="approval[]" value="<{$obj->getShow('item_id')}>"<{if $obj->getShow('approval')}> checked="checked"<{/if}>><{else}><{$obj->getShow('approval')}><{/if}></td>
+        </tr>
+      <{/foreach}>
+      <{if $isAdmin}>
+        <tr class="<{cycle values='odd,even'}>">
+          <td colspan="2"> </td>
+          <td><input type="submit" value="<{$smarty.const._SUBMIT}>" /></td>
+        </tr>
+      <{/if}>
+    </tbody>
+  </table>
+  <{if $isAdmin}>
+  <input type="hidden" name="<{$smarty.const._REQUESTED_DATA_ID}>" value="<{$object->getShow('store_id')}>" />
+  </form>
+  <{/if}>
+</div>
+<{/if}>
+
 </div>

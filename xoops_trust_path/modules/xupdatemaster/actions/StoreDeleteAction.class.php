@@ -43,7 +43,14 @@ class Xupdatemaster_StoreDeleteAction extends Xupdatemaster_AbstractDeleteAction
 	public function prepare()
 	{
 		parent::prepare();
-
+		if($this->mRoot->mContext->mUser->isInRole('Site.RegisteredUser')){
+			$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
+			if($this->mObject->isNew()){
+				$this->mObject->set('uid', $uid);
+			} else if (!$this->isAdmin && $uid != $this->mObject->get('uid')) {
+				return false;
+			}
+		}
 		return true;
 	}
 

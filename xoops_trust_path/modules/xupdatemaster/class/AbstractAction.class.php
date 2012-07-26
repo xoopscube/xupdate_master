@@ -23,6 +23,14 @@ abstract class Xupdatemaster_AbstractAction
 
     public $mAccessController = array();
 
+    protected $sHandler;
+    protected $iHandler;
+    protected $isAdmin;
+    protected $contents_name = array(
+    		0 => 'disabled',
+    		1 => 'module',
+    		2 => 'theme' );
+    
     /**
      * __construct
      * 
@@ -35,6 +43,9 @@ abstract class Xupdatemaster_AbstractAction
         $this->mRoot =& XCube_Root::getSingleton();
         $this->mModule =& $this->mRoot->mContext->mModule;
         $this->mAsset =& $this->mModule->mAssetManager;
+        $this->sHandler =& $this->mAsset->getObject('handler', 'store', false);
+        $this->iHandler =& $this->mAsset->getObject('handler', 'item', false);
+        $this->isAdmin = $this->mRoot->mContext->mUser->isInRole('Module.'.$this->mAsset->mDirname.'.Admin');
     }
 
     /**
@@ -299,6 +310,92 @@ abstract class Xupdatemaster_AbstractAction
         else{
             return Legacy_Utils::renderUri($this->mAsset->mDirname, $tableName, 0, $actionName);
         }
+    }
+    
+    
+    protected function getItem($sObj) {
+    	$sid = $sObj->get('store_id');
+    	$criteria = new CriteriaCompo();
+    	$criteria->add(new Criteria('store_id', $sid));
+    	$iObj = $this->iHandler->getObjects($criteria);
+    	return $iObj;
+    }
+    
+    protected function setItem($sObj) {
+    	$url = $sObj->get('addon_url');
+    	//if ($sObj->get('setting_type') === 0) {
+    		$ini = @ parse_ini_string(@file_get_contents($url), true);
+    	//} else {
+    	//	$ini = @ json_decode(@file_get_contents($url), true);
+    	//}
+    	$iObj = $this->getItem($sObj);
+    	$exists = array();
+    	foreach ($iObj as $id => $obj) {
+    		$target_key = $obj->get('target_key');
+    		$exists[$target_key] = $obj;
+    	}
+    	 
+    	if ($ini) {
+    		$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
+    		foreach ($ini as $item) {
+    			if (isset($exists[$item['target_key']])) {
+    				$content_id = $exists[$item['target_key']]->get('content_id');
+    				$addon_url = $exists[$item['target_key']]->get('addon_url');
+    				unset($exists[$item['target_key']]);
+    				if ($item['addon_url'] === $addon_url) {
+    					continue;
+    				}
+    				$iobj = $this->iHandler->get($item_id);
+    				$iobj->unsetNew();
+    				$iobj->assignVar('addon_url', $item['addon_url']);
+    			} else {
+    				$iobj = new $this->iHandler->mClass();
+    				$iobj->setNew();
+    				$iobj->assignVar('title', $item['dirname']);
+    				$iobj->assignVar('target_key', $item['target_key']);
+    				$iobj->assignVar('store_id', $this->mObject->get('store_id'));
+    				$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
+    				$iobj->assignVar('addon_url', $item['addon_url']);
+    				$iobj->assignVar('uid', $uid);
+    			}
+    			if ($this->iHandler->insert($iobj ,true)) {
+    				//echo('<pre>');var_dump($iobj);
+    			}
+    			//echo('<pre>');var_dump($iobj);
+    		}
+    	}
+    	if ($exists) {
+    		foreach($exists as $obj) {
+    			$this->iHandler->delete($obj, true);
+    		}
+    	}
+    	$this->makeJsonCache();
+    }
+    
+    protected function makeJsonCache() {
+    	$file = XOOPS_ROOT_PATH . '/uploads/'.$this->mAsset->mDirname.'/stores_json.txt';
+    	$sObjects =& $this->sHandler->getObjects(null,null,null,true);
+    	$data = array();
+    	foreach($sObjects as $sObj) {
+    		$iObj = $this->getItem($sObj);
+    		$items = array();
+    		$i = 1;
+    		foreach ($iObj as $item) {
+    			$items[$i]['target_key'] = $item->get('target_key');
+    			$items[$i++]['approved'] = $item->get('approval')? true : false;
+    		}
+    		$sid = $sObj->get('store_id');
+    		$data[$sid] = array(
+    				'sid' => $sid,
+    				'name' => $sObj->get('title'),
+    				'contents' => $sObj->get('contents'),
+    				'setting_type' => 'ini',
+    				'addon_url' => $sObj->get('addon_url'),
+    				'items' => $items
+    		);
+    	}
+    	$data = json_encode($data);
+    	file_put_contents($file, $data);
     }
 }
 

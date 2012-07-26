@@ -33,6 +33,7 @@ class Xupdatemaster_StoreObject extends Legacy_AbstractObject
         $this->initVar('title', XOBJ_DTYPE_STRING, '', false, 255);
         $this->initVar('contents', XOBJ_DTYPE_STRING, '', false, 60);
         $this->initVar('addon_url', XOBJ_DTYPE_STRING, '', false, 255);
+        $this->initVar('uid', XOBJ_DTYPE_INT, '', false);
         $this->initVar('posttime', XOBJ_DTYPE_INT, time(), false);
    }
 
