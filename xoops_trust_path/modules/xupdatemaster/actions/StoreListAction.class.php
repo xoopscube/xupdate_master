@@ -48,7 +48,6 @@ class Xupdatemaster_StoreListAction extends Xupdatemaster_AbstractListAction
 		$render->setAttribute('dirname', $this->mAsset->mDirname);
 		$render->setAttribute('dataname', self::DATANAME);
 		$render->setAttribute('pageNavi', $this->mFilter->mNavi);
-		$render->setAttribute('contents_name', $this->contents_name);
 	}
 }
 

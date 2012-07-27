@@ -42,7 +42,7 @@
         <tr class="<{cycle values='odd,even'}>">
           <td><{$obj->getShow('store_id')}></td>
           <td><a href="<{$xoops_url}>/modules/<{$dirname}>/index.php?action=ItemList&amp;store_id=<{$obj->getShow('store_id')}>""><{$obj->getShow('title')}></a></td>
-          <td><{$obj->getShow('contents')}></td>
+          <td><{$obj->getContentsName()}></td>
           <td><{$obj->getShow('addon_url')}></td>
           <td><{$obj->getShow('posttime')|xoops_formattimestamp:m}></td>
 
