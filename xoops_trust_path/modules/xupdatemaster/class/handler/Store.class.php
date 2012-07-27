@@ -18,7 +18,11 @@ class Xupdatemaster_StoreObject extends Legacy_AbstractObject
     const PRIMARY = 'store_id';
     const DATANAME = 'store';
     public $mChildList = array('item');
-
+    public $contents_name = array(
+    		0 => 'disabled',
+    		1 => 'module',
+    		2 => 'theme' );
+    
     /**
      * __construct
      * 
@@ -31,7 +35,7 @@ class Xupdatemaster_StoreObject extends Legacy_AbstractObject
         parent::__construct();  
         $this->initVar('store_id', XOBJ_DTYPE_INT, '', false);
         $this->initVar('title', XOBJ_DTYPE_STRING, '', false, 255);
-        $this->initVar('contents', XOBJ_DTYPE_STRING, '', false, 60);
+        $this->initVar('contents', XOBJ_DTYPE_INT, '', false);
         $this->initVar('addon_url', XOBJ_DTYPE_STRING, '', false, 255);
         $this->initVar('uid', XOBJ_DTYPE_INT, '', false);
         $this->initVar('posttime', XOBJ_DTYPE_INT, time(), false);
@@ -61,6 +65,10 @@ class Xupdatemaster_StoreObject extends Legacy_AbstractObject
 	public function getImageNumber()
 	{
 		return 0;
+	}
+	
+	public function getContentsName() {
+		return isset($this->contents_name[$this->get('contents')])? $this->contents_name[$this->get('contents')] : 'unknown';
 	}
 
 }

@@ -68,6 +68,10 @@ class Xupdatemaster_StoreEditAction extends Xupdatemaster_AbstractEditAction
         $render->setAttribute('dirname', $this->mAsset->mDirname);
         $render->setAttribute('dataname', self::DATANAME);
 
+        $contents_checked = array_pad(array(), 3, '');
+        $contents_checked[$this->mObject->get('contents')] = ' checked="checked"';
+        $render->setAttribute('contents_checked', $contents_checked);
+
         //set tag usage
         $render->setAttribute('tag_dirname', $this->mRoot->mContext->mModuleConfig['tag_dirname']);
         

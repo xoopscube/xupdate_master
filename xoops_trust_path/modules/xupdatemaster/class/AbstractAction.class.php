@@ -27,10 +27,6 @@ abstract class Xupdatemaster_AbstractAction
     protected $sHandler;
     protected $iHandler;
     protected $isAdmin;
-    protected $contents_name = array(
-    		0 => 'disabled',
-    		1 => 'module',
-    		2 => 'theme' );
     
     /**
      * __construct
@@ -356,7 +352,7 @@ abstract class Xupdatemaster_AbstractAction
     				$iobj->assignVar('title', $item['dirname']);
     				$iobj->assignVar('target_key', $item['target_key']);
     				$iobj->assignVar('addon_url', $item['addon_url']);
-    				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item));
+    				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item, $oObj->get('category_id')));
     			} else {
     				$iobj = new $this->iHandler->mClass();
     				$iobj->setNew();
@@ -379,8 +375,8 @@ abstract class Xupdatemaster_AbstractAction
     	$this->makeJsonCache();
     }
     
-    private function _getCategoryIdByIni($ini) {
-    	$category_id = $this->mModuleConfig['default_catid'];
+    private function _getCategoryIdByIni($ini, $savedId = null) {
+    	$category_id = $savedId ? $savedId : $this->mModuleConfig['default_catid'];
     	if (! empty($ini['category']) && is_numeric($ini['category'])) {
     		if ($this->mAccessController['main']->check($ini['category'], Xupdatemaster_AbstractAccessController::POST, 'item')) {
     			$category_id = (int)$ini['category'];
@@ -406,7 +402,7 @@ abstract class Xupdatemaster_AbstractAction
     		$data[$sid] = array(
     				'sid' => $sid,
     				'name' => $sObj->get('title'),
-    				'contents' => $sObj->get('contents'),
+    				'contents' => $sObj->getContentsName(),
     				'setting_type' => 'ini',
     				'addon_url' => $sObj->get('addon_url'),
     				'items' => $items
