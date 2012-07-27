@@ -57,6 +57,8 @@ define('_MI_XUPDATEMASTER_LANG_ACCESS_CONTROLLER', 'Access Controller Module');
 define('_MI_XUPDATEMASTER_DESC_ACCESS_CONTROLLER', 'Select the category/group module to manage Edit/View permission.');
 define('_MI_XUPDATEMASTER_LANG_AUTH_TYPE', 'Auth Type List');
 define('_MI_XUPDATEMASTER_DESC_AUTH_TYPE', 'List of Auth type. Default Values: "viewer|poster|manager"');
+define('_MI_XUPDATEMASTER_LANG_DEF_CATID', 'Default category ID');
+define('_MI_XUPDATEMASTER_DESC_DEF_CATID', '');
 define('_MD_XUPDATEMASTER_TITLE_ACTION_VIEW', 'View');
 define('_MD_XUPDATEMASTER_TITLE_ACTION_POST', 'Post');
 define('_MD_XUPDATEMASTER_TITLE_ACTION_MANAGE', 'Manage');
@@ -71,6 +73,6 @@ define('_MI_XUPDATEMASTER_TPL_ITEM_LIST', 'Item List');
 define('_MI_XUPDATEMASTER_TPL_ITEM_EDIT', 'Item Edit');
 define('_MI_XUPDATEMASTER_TPL_ITEM_DELETE', 'Item Delete');
 define('_MI_XUPDATEMASTER_TPL_ITEM_VIEW', 'Item View');
-
+define('_MI_XUPDATEMASTER_TPL_ITEM_INC', 'Item View (for Category includes)');
 
 ?>

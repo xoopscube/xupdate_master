@@ -29,6 +29,9 @@
           <{$smarty.const._MD_XUPDATEMASTER_LANG_ADDON_URL}>
         </th>
         <th>
+          <{$smarty.const._MD_XUPDATEMASTER_LANG_CATEGORY_ID}>
+        </th>
+        <th>
           <{$smarty.const._MD_XUPDATEMASTER_LANG_APPROVAL}>
         </th>
       </tr>
@@ -38,13 +41,14 @@
         <tr class="<{cycle values='odd,even'}>">
           <td><{$obj->getShow('target_key')}></td>
           <td><{$obj->getShow('addon_url')}></td>
+          <td><{if $isAdmin}><select name="category_id_<{$obj->getShow('item_id')}>"><{legacy_category_select tree=$accessController->getTree('post') selectedValue=$obj->getShow('category_id')}></select><{else}><{$accessController->getTitle($obj->getShow('item_id'))}><{/if}></td>
           <td><{if $isAdmin}><input type="checkbox" name="approval[]" value="<{$obj->getShow('item_id')}>"<{if $obj->getShow('approval')}> checked="checked"<{/if}>><{else}><{$obj->getShow('approval')}><{/if}></td>
         </tr>
       <{/foreach}>
       <{if $isAdmin}>
         <tr class="<{cycle values='odd,even'}>">
           <td colspan="2"> </td>
-          <td><input type="submit" value="<{$smarty.const._SUBMIT}>" /></td>
+          <td colspan="2"><input type="submit" value="<{$smarty.const._SUBMIT}>" /></td>
         </tr>
       <{/if}>
     </tbody>

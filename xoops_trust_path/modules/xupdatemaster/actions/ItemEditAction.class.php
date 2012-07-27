@@ -49,20 +49,21 @@ class Xupdatemaster_ItemEditAction extends Xupdatemaster_AbstractEditAction
 			if($check==true){
 				return true;
 			}
-			//is new post and has post permission ?
-			$check = $this->mAccessController['main']->check($catId, Xupdatemaster_AbstractAccessController::POST, 'item');
-			if($check==true && $this->mObject->isNew()){
-				return true;
-			}
-			//is old post and your post ?
-			if($check==true && ! $this->mObject->isNew() && $this->mObject->get('uid')==Legacy_Utils::getUid() && $this->mObject->get('uid')>0){
-				return true;
-			}
+// 			//is new post and has post permission ?
+// 			$check = $this->mAccessController['main']->check($catId, Xupdatemaster_AbstractAccessController::POST, 'item');
+// 			if($check==true && $this->mObject->isNew()){
+// 				return true;
+// 			}
+// 			//is old post and your post ?
+// 			if($check==true && ! $this->mObject->isNew() && $this->mObject->get('uid')==Legacy_Utils::getUid() && $this->mObject->get('uid')>0){
+// 				return true;
+// 			}
 		}
 		else{
-			$idList = array();
-			$idList = $this->mAccessController['main']->getPermittedIdList(Xupdatemaster_AbstractAccessController::POST, $this->_getCatId());
-			if(count($idList)>0 || $this->mAccessController['main']->getAccessControllerType()=='none'){
+// 			$idList = array();
+// 			$idList = $this->mAccessController['main']->getPermittedIdList(Xupdatemaster_AbstractAccessController::POST, $this->_getCatId());
+// 			if(count($idList)>0 || $this->mAccessController['main']->getAccessControllerType()=='none'){
+			if ($this->isAdmin) {
 				return true;
 			}
 		}

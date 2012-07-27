@@ -18,6 +18,7 @@ abstract class Xupdatemaster_AbstractAction
     public /*** XCube_Root ***/ $mRoot = null;
 
     public /*** Xupdatemaster_Module ***/ $mModule = null;
+    public $mModuleConfig = null;
 
     public /*** Xupdatemaster_AssetManager ***/ $mAsset = null;
 
@@ -42,6 +43,7 @@ abstract class Xupdatemaster_AbstractAction
     {
         $this->mRoot =& XCube_Root::getSingleton();
         $this->mModule =& $this->mRoot->mContext->mModule;
+        $this->mModuleConfig =& $this->mRoot->mContext->mModuleConfig;
         $this->mAsset =& $this->mModule->mAssetManager;
         $this->sHandler =& $this->mAsset->getObject('handler', 'store', false);
         $this->iHandler =& $this->mAsset->getObject('handler', 'item', false);
@@ -323,11 +325,11 @@ abstract class Xupdatemaster_AbstractAction
     
     protected function setItem($sObj) {
     	$url = $sObj->get('addon_url');
-    	//if ($sObj->get('setting_type') === 0) {
-    		$ini = @ parse_ini_string(@file_get_contents($url), true);
-    	//} else {
-    	//	$ini = @ json_decode(@file_get_contents($url), true);
-    	//}
+    	if (preg_match('/\bjson\b/i', $url)) {
+    		$ini = @ json_decode($this->UrlGetContents($url), true);
+    	} else {
+    		$ini = @ parse_ini_string($this->UrlGetContents($url), true);
+    	}
     	$iObj = $this->getItem($sObj);
     	$exists = array();
     	foreach ($iObj as $id => $obj) {
@@ -339,15 +341,22 @@ abstract class Xupdatemaster_AbstractAction
     		$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
     		foreach ($ini as $item) {
     			if (isset($exists[$item['target_key']])) {
-    				$content_id = $exists[$item['target_key']]->get('content_id');
-    				$addon_url = $exists[$item['target_key']]->get('addon_url');
+    				$oObj = $exists[$item['target_key']];
+    				$content_id = $oObj->get('content_id');
+    				$addon_url = $oObj->get('addon_url');
     				unset($exists[$item['target_key']]);
-    				if ($item['addon_url'] === $addon_url) {
+    				if (   $item['dirname']    === $oObj->get('title')
+    					&& $item['target_key'] === $oObj->get('target_key')
+    					&& $item['addon_url']  === $oObj->get('addon_url')
+    					&& ((empty($item['category'])? $this->mModuleConfig['default_catid'] : $item['category']) == $oObj->get('category_id')) ) {
     					continue;
     				}
-    				$iobj = $this->iHandler->get($item_id);
+    				$iobj = $this->iHandler->get($oObj->get('item_id'));
     				$iobj->unsetNew();
+    				$iobj->assignVar('title', $item['dirname']);
+    				$iobj->assignVar('target_key', $item['target_key']);
     				$iobj->assignVar('addon_url', $item['addon_url']);
+    				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item));
     			} else {
     				$iobj = new $this->iHandler->mClass();
     				$iobj->setNew();
@@ -357,11 +366,9 @@ abstract class Xupdatemaster_AbstractAction
     				$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
     				$iobj->assignVar('addon_url', $item['addon_url']);
     				$iobj->assignVar('uid', $uid);
+    				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item));
     			}
-    			if ($this->iHandler->insert($iobj ,true)) {
-    				//echo('<pre>');var_dump($iobj);
-    			}
-    			//echo('<pre>');var_dump($iobj);
+    			$this->iHandler->insert($iobj ,true);
     		}
     	}
     	if ($exists) {
@@ -370,6 +377,16 @@ abstract class Xupdatemaster_AbstractAction
     		}
     	}
     	$this->makeJsonCache();
+    }
+    
+    private function _getCategoryIdByIni($ini) {
+    	$category_id = $this->mModuleConfig['default_catid'];
+    	if (! empty($ini['category']) && is_numeric($ini['category'])) {
+    		if ($this->mAccessController['main']->check($ini['category'], Xupdatemaster_AbstractAccessController::POST, 'item')) {
+    			$category_id = (int)$ini['category'];
+    		}
+    	}
+    	return $category_id;
     }
     
     protected function makeJsonCache() {
@@ -382,6 +399,7 @@ abstract class Xupdatemaster_AbstractAction
     		$i = 1;
     		foreach ($iObj as $item) {
     			$items[$i]['target_key'] = $item->get('target_key');
+    			$items[$i]['category_id'] = $item->get('category_id');
     			$items[$i++]['approved'] = $item->get('approval')? true : false;
     		}
     		$sid = $sObj->get('store_id');
@@ -397,6 +415,24 @@ abstract class Xupdatemaster_AbstractAction
     	$data = json_encode($data);
     	file_put_contents($file, $data);
     }
+    
+	protected function UrlGetContents($url) {
+		if (! function_exists('curl_init')) {
+			die('xupdatestore require cUrl extention.');
+		}
+		$data = '';
+		if ($ch= curl_init()) {
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			$data = curl_exec($ch);
+			curl_close($ch);
+		}
+		return $data;
+	}
 }
 
 ?>

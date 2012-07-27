@@ -53,19 +53,27 @@ class Xupdatemaster_StoreViewAction extends Xupdatemaster_AbstractViewAction
 			$iObj = $this->getItem($this->mObject);
 			$change = false;
 			foreach($iObj as $obj) {
+				$obj->unsetNew();
 				$key = $obj->get('item_id');
+				$category_id = (int)$req->getRequest('category_id_'.$key);
+				if ($category_id != $obj->get('category_id')) {
+					$obj->assignVar('category_id', $category_id);
+					$obj->setNew();
+				}
 				if (isset($apps[$key])) {
 					if (! $obj->get('approval')) {
-						$obj->assignVar('approval', true);
-						$this->iHandler->insert($obj ,true);
-						$change = true;
+						$obj->assignVar('approval', 1);
+						$obj->setNew();
 					}
 				} else {
 					if ($obj->get('approval')) {
-						$obj->assignVar('approval', false);
-						$this->iHandler->insert($obj ,true);
-						$change = true;
+						$obj->assignVar('approval', 0);
+						$obj->setNew();
 					}
+				}
+				if ($obj->isNew()) {
+					$obj->unsetNew();
+					$this->iHandler->insert($obj ,false);
 				}
 			}
 			if ($change) {
@@ -79,6 +87,8 @@ class Xupdatemaster_StoreViewAction extends Xupdatemaster_AbstractViewAction
 		$render->setAttribute('dirname', $this->mAsset->mDirname);
 		$render->setAttribute('dataname', self::DATANAME);
 		$render->setAttribute('isAdmin', $this->isAdmin);
+		$render->setAttribute('accessController',Xupdatemaster_Utils::getAccessControllerObject($this->mAsset->mDirname, 'item'));
+		
 	}
 }
 
