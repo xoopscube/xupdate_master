@@ -72,6 +72,7 @@ class Xupdatemaster_StoreViewAction extends Xupdatemaster_AbstractViewAction
 					}
 				}
 				if ($obj->isNew()) {
+					$change = true;
 					$obj->unsetNew();
 					$this->iHandler->insert($obj ,false);
 				}
