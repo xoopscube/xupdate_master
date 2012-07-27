@@ -91,6 +91,18 @@ class Xupdatemaster_ItemHandler extends Legacy_AbstractClientObjectHandler
         parent::XoopsObjectGenericHandler($db);
     }
 
+	/**
+	 * check if use Legacy_Activity
+	 *
+	 * @param mixed[]	$conf
+	 *
+	 * @return	bool
+	 */
+    protected function _isActivityClient(/*** mixed[] ***/ $conf)
+    {
+    	return false;
+    }
+
 }
 
 ?>
