@@ -56,7 +56,7 @@ class Xupdatemaster_TagClientDelegate implements Legacy_iTagClientDelegate
     public static function getClientData(/*** mixed ***/ &$list, /*** string ***/ $dirname, /*** string ***/ $dataname, /*** int[] ***/ $idList)
     {
         //default
-        $limit = 5;
+        $limit = 30;
         $start =0;
     
         $handler = Legacy_Utils::getModuleHandler($dataname, $dirname);
@@ -75,7 +75,7 @@ class Xupdatemaster_TagClientDelegate implements Legacy_iTagClientDelegate
 	        $handler = xoops_gethandler('module');
 	        $module = $handler->getByDirname($dirname);
 	        $list['title'][] = $module->name();
-	        $list['template_name'][] = 'db:'.$dirname .'_'. $dataname .'_inc_view.html';
+	        $list['template_name'][] = 'db:'.$dirname .'_'. $dataname .'_inc.html';
 	    }
     }
 }
