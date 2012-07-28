@@ -16,7 +16,11 @@
   <dd><{xoops_input type=text name=title value=$actionForm->get('title') size=40 maxlength=255 class="required"}></dd>
 
   <dt class="required"><{$smarty.const._MD_XUPDATEMASTER_LANG_CONTENTS}></dt>
-  <dd><{xoops_input type=text name=contents value=$actionForm->get('contents') size=40 maxlength=60 class="required"}></dd>
+  <dd>
+      <input type="radio" name="contents" value="0"<{$contents_checked[0]}>><{$object->contents_name[0]}>
+    | <input type="radio" name="contents" value="1"<{$contents_checked[1]}>><{$object->contents_name[1]}>
+    | <input type="radio" name="contents" value="2"<{$contents_checked[2]}>><{$object->contents_name[2]}>
+  </dd>
 
   <dt class="required"><{$smarty.const._MD_XUPDATEMASTER_LANG_ADDON_URL}></dt>
   <dd><{xoops_input type=text name=addon_url value=$actionForm->get('addon_url') size=100 maxlength=255 class="required"}></dd>

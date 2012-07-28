@@ -35,6 +35,7 @@ class Xupdatemaster_ItemObject extends Legacy_AbstractObject
         $this->initVar('uid', XOBJ_DTYPE_INT, '', false);
         $this->initVar('category_id', XOBJ_DTYPE_INT, '', false);
         $this->initVar('target_key', XOBJ_DTYPE_STRING, '', false, 60);
+        $this->initVar('addon_url', XOBJ_DTYPE_STRING, '', false, 255);
         $this->initVar('approval', XOBJ_DTYPE_INT, '', false);
         $this->initVar('posttime', XOBJ_DTYPE_INT, time(), false);
    }
@@ -88,6 +89,18 @@ class Xupdatemaster_ItemHandler extends Legacy_AbstractClientObjectHandler
     {
         $this->mTable = strtr($this->mTable,array('{dirname}' => $dirname));
         parent::XoopsObjectGenericHandler($db);
+    }
+
+	/**
+	 * check if use Legacy_Activity
+	 *
+	 * @param mixed[]	$conf
+	 *
+	 * @return	bool
+	 */
+    protected function _isActivityClient(/*** mixed[] ***/ $conf)
+    {
+    	return false;
     }
 
 }

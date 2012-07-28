@@ -42,10 +42,15 @@ class Xupdatemaster_StoreEditAction extends Xupdatemaster_AbstractEditAction
     public function prepare()
     {
         parent::prepare();
-        if($this->mObject->isNew()){
-
-        }
-     return true;
+    	if($this->mRoot->mContext->mUser->isInRole('Site.RegisteredUser')){
+			$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
+			if($this->mObject->isNew()){
+				$this->mObject->set('uid', $uid);
+			} else if (!$this->isAdmin && $uid != $this->mObject->get('uid')) {
+				return false;
+			}
+    	}
+		return true;
     }
 
     /**
@@ -57,16 +62,37 @@ class Xupdatemaster_StoreEditAction extends Xupdatemaster_AbstractEditAction
     **/
     public function executeViewInput(/*** XCube_RenderTarget ***/ &$render)
     {
-        $render->setTemplateName($this->mAsset->mDirname . '_store_edit.html');
+    	$render->setTemplateName($this->mAsset->mDirname . '_store_edit.html');
         $render->setAttribute('actionForm', $this->mActionForm);
         $render->setAttribute('object', $this->mObject);
         $render->setAttribute('dirname', $this->mAsset->mDirname);
         $render->setAttribute('dataname', self::DATANAME);
+
+        $contents_checked = array_pad(array(), 3, '');
+        $contents_checked[$this->mObject->get('contents')] = ' checked="checked"';
+        $render->setAttribute('contents_checked', $contents_checked);
 
         //set tag usage
         $render->setAttribute('tag_dirname', $this->mRoot->mContext->mModuleConfig['tag_dirname']);
         
   }
 
+  /**
+   * _doExecute
+   *
+   * @param   void
+   *
+   * @return  Enum
+   **/
+  protected function _doExecute()
+  {
+  	if($this->mObjectHandler->insert($this->mObject))
+  	{
+  		$this->setItem($this->mObject);
+  		return XUPDATEMASTER_FRAME_VIEW_SUCCESS;
+  	}
+  
+  	return XUPDATEMASTER_FRAME_VIEW_ERROR;
+  }
 }
 ?>
