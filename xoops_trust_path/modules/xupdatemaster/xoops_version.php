@@ -81,7 +81,7 @@ $modversion['templates'] = array(
         array('file' => '{dirname}_item_edit.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_EDIT),
         array('file' => '{dirname}_item_list.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_LIST),
         array('file' => '{dirname}_item_view.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_VIEW),
-        array('file' => '{dirname}_item_inc_view.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_VIEW),
+        array('file' => '{dirname}_item_inc.html','description' => _MI_XUPDATEMASTER_TPL_ITEM_INC),
 
 ##[/cubson:templates]
 );
@@ -153,6 +153,16 @@ $modversion['config'] = array(
 		'formtype'		=> 'textbox' ,
 		'valuetype' 	=> 'text' ,
 		'default'		=> 'viewer|poster|manager' ,
+		'options'		=> array()
+	) ,
+
+	array(
+		'name'			=> 'default_catid' ,
+		'title'			=> '_MI_XUPDATEMASTER_LANG_DEF_CATID',
+		'description'	=> '_MI_XUPDATEMASTER_DESC_DEF_CATID',
+		'formtype'		=> 'textbox',
+		'valuetype'		=> 'int',
+		'default'		=> '0',
 		'options'		=> array()
 	) ,
 
