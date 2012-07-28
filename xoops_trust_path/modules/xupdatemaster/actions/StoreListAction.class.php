@@ -43,6 +43,17 @@ class Xupdatemaster_StoreListAction extends Xupdatemaster_AbstractListAction
 	**/
 	public function executeViewIndex(/*** XCube_RenderTarget ***/ &$render)
 	{
+		if ($this->mRoot->mContext->mRequest->getRequest('checkjson')) {
+			$this->checkJsonCache();
+			while( ob_get_level() && @ ob_end_clean() ){}
+			header('Content-type: image/gif');
+			header('Last-Modified: '.gmdate( 'D, d M Y H:i:s' ).' GMT');
+			header('pragma: no-cache');
+			header('Cache-Control: no-cache, must-revalidate');
+			header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+			readfile(XOOPS_ROOT_PATH . '/modules/' . $this->mAsset->mDirname . '/images/blank.gif');
+			exit();
+		}
 		$render->setTemplateName($this->mAsset->mDirname . '_store_list.html');
 		$render->setAttribute('objects', $this->mObjects);
 		$render->setAttribute('dirname', $this->mAsset->mDirname);

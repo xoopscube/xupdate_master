@@ -28,6 +28,9 @@ abstract class Xupdatemaster_AbstractAction
     protected $iHandler;
     protected $isAdmin;
     
+    private $jsonCacheFile;
+    private $jsonCacheTTL = 600;
+    
     /**
      * __construct
      * 
@@ -44,6 +47,7 @@ abstract class Xupdatemaster_AbstractAction
         $this->sHandler =& $this->mAsset->getObject('handler', 'store', false);
         $this->iHandler =& $this->mAsset->getObject('handler', 'item', false);
         $this->isAdmin = $this->mRoot->mContext->mUser->isInRole('Module.'.$this->mAsset->mDirname.'.Admin');
+        $this->jsonCacheFile = XOOPS_ROOT_PATH . '/uploads/' . $this->mAsset->mDirname . '/stores_json.txt';
     }
 
     /**
@@ -310,6 +314,18 @@ abstract class Xupdatemaster_AbstractAction
         }
     }
     
+    protected function checkJsonCache() {
+    	$jsontime = XOOPS_ROOT_PATH . '/uploads/' . $this->mAsset->mDirname . '/json.time';
+    	if (@ filemtime($jsontime) + $this->jsonCacheTTL < time()) {
+    		$sObjects =& $this->sHandler->getObjects(null,null,null,true);
+    		$data = array();
+    		foreach($sObjects as $sObj) {
+    			$this->setItem($sObj, false);
+    		}
+    		$this->makeJsonCache();
+    		touch($jsontime);
+    	}
+    }
     
     protected function getItem($sObj) {
     	$sid = $sObj->get('store_id');
@@ -319,7 +335,7 @@ abstract class Xupdatemaster_AbstractAction
     	return $iObj;
     }
     
-    protected function setItem($sObj) {
+    protected function setItem($sObj, $makeCache = true) {
     	$url = $sObj->get('addon_url');
     	if (preg_match('/\bjson\b/i', $url)) {
     		$ini = @ json_decode($this->UrlGetContents($url), true);
@@ -338,7 +354,6 @@ abstract class Xupdatemaster_AbstractAction
     		foreach ($ini as $item) {
     			if (isset($exists[$item['target_key']])) {
     				$oObj = $exists[$item['target_key']];
-    				$content_id = $oObj->get('content_id');
     				$addon_url = $oObj->get('addon_url');
     				unset($exists[$item['target_key']]);
     				if (   $item['dirname']    === $oObj->get('title')
@@ -358,7 +373,7 @@ abstract class Xupdatemaster_AbstractAction
     				$iobj->setNew();
     				$iobj->assignVar('title', $item['dirname']);
     				$iobj->assignVar('target_key', $item['target_key']);
-    				$iobj->assignVar('store_id', $this->mObject->get('store_id'));
+    				$iobj->assignVar('store_id', $sObj->get('store_id'));
     				$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
     				$iobj->assignVar('addon_url', $item['addon_url']);
     				$iobj->assignVar('uid', $uid);
@@ -372,7 +387,9 @@ abstract class Xupdatemaster_AbstractAction
     			$this->iHandler->delete($obj, true);
     		}
     	}
-    	$this->makeJsonCache();
+    	if ($makeCache) {
+    		$this->makeJsonCache();
+    	}
     }
     
     private function _getCategoryIdByIni($ini, $savedId = null) {
@@ -386,7 +403,6 @@ abstract class Xupdatemaster_AbstractAction
     }
     
     protected function makeJsonCache() {
-    	$file = XOOPS_ROOT_PATH . '/uploads/'.$this->mAsset->mDirname.'/stores_json.txt';
     	$sObjects =& $this->sHandler->getObjects(null,null,null,true);
     	$data = array();
     	foreach($sObjects as $sObj) {
@@ -409,7 +425,7 @@ abstract class Xupdatemaster_AbstractAction
     		);
     	}
     	$data = json_encode($data);
-    	file_put_contents($file, $data);
+    	file_put_contents($this->jsonCacheFile, $data);
     }
     
 	protected function UrlGetContents($url) {
