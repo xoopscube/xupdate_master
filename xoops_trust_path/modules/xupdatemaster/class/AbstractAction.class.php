@@ -315,13 +315,22 @@ abstract class Xupdatemaster_AbstractAction
     }
     
     protected function checkJsonCache() {
-    	$jsontime = XOOPS_ROOT_PATH . '/uploads/' . $this->mAsset->mDirname . '/json.time';
+    	$mydirname = $this->mAsset->mDirname;
+    	$jsontime = XOOPS_ROOT_PATH . '/uploads/' . $mydirname . '/json.time';
     	if (@ filemtime($jsontime) + $this->jsonCacheTTL < time()) {
+    		$userHandler =& xoops_gethandler('user');
+    		$mid = $this->mModule->mXoopsModule->get('mid');
     		$sObjects =& $this->sHandler->getObjects(null,null,null,true);
     		$data = array();
+    		$_isAdmin = $this->isAdmin;
     		foreach($sObjects as $sObj) {
+    			$uid = $sObj->get('uid');
+    			$user =& $userHandler->get($uid);
+    			$this->isAdmin = $user->isAdmin($mid);
     			$this->setItem($sObj, false);
+    			$user = null;
     		}
+    		$this->isAdmin = $_isAdmin;
     		$this->makeJsonCache();
     		touch($jsontime);
     	}
@@ -348,7 +357,7 @@ abstract class Xupdatemaster_AbstractAction
     		$target_key = $obj->get('target_key');
     		$exists[$target_key] = $obj;
     	}
-    	 
+    	
     	if ($ini) {
     		$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
     		foreach ($ini as $item) {
@@ -357,7 +366,6 @@ abstract class Xupdatemaster_AbstractAction
     				$addon_url = $oObj->get('addon_url');
     				unset($exists[$item['target_key']]);
     				if (   $item['dirname']    === $oObj->get('title')
-    					&& $item['target_key'] === $oObj->get('target_key')
     					&& $item['addon_url']  === $oObj->get('addon_url')
     					&& ((empty($item['category'])? $this->mModuleConfig['default_catid'] : $item['category']) == $oObj->get('category_id')) ) {
     					continue;
@@ -365,9 +373,11 @@ abstract class Xupdatemaster_AbstractAction
     				$iobj = $this->iHandler->get($oObj->get('item_id'));
     				$iobj->unsetNew();
     				$iobj->assignVar('title', $item['dirname']);
-    				$iobj->assignVar('target_key', $item['target_key']);
     				$iobj->assignVar('addon_url', $item['addon_url']);
     				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item, $oObj->get('category_id')));
+    				if ($item['target_key'] !== $oObj->get('target_key') || $item['addon_url']  !== $oObj->get('addon_url')) {
+    					$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
+    				}
     			} else {
     				$iobj = new $this->iHandler->mClass();
     				$iobj->setNew();
