@@ -41,7 +41,7 @@
         <tr class="<{cycle values='odd,even'}>">
           <td><{$obj->getShow('target_key')}></td>
           <td><a href="<{$obj->getShow('addon_url')|replace:'%s':$obj->getShow('target_key')}>"><span class="url"><{$obj->getShow('addon_url')|replace:'%s':$obj->getShow('target_key')}></span></a></td>
-          <td><{if $isAdmin}><select name="category_id_<{$obj->getShow('item_id')}>"><{legacy_category_select tree=$accessController->getTree('post') selectedValue=$obj->getShow('category_id')}></select><{else}><{$accessController->getTitle($obj->getShow('item_id'))}><{/if}></td>
+          <td><{if $isAdmin}><select name="category_id_<{$obj->getShow('item_id')}>"><{legacy_category_select tree=$accessController->getTree('post') selectedValue=$obj->getShow('category_id')}></select><{else}><{$accessController->getTitle($obj->getShow('category_id'))}><{/if}></td>
           <td><{if $isAdmin}><input type="checkbox" name="approval[]" value="<{$obj->getShow('item_id')}>"<{if $obj->getShow('approval')}> checked="checked"<{/if}>><{else}><{$obj->getShow('approval')}><{/if}></td>
         </tr>
       <{/foreach}>
