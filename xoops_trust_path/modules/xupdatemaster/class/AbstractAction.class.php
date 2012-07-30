@@ -47,7 +47,7 @@ abstract class Xupdatemaster_AbstractAction
         $this->sHandler =& $this->mAsset->getObject('handler', 'store', false);
         $this->iHandler =& $this->mAsset->getObject('handler', 'item', false);
         $this->isAdmin = $this->mRoot->mContext->mUser->isInRole('Module.'.$this->mAsset->mDirname.'.Admin');
-        $this->jsonCacheFile = XOOPS_ROOT_PATH . '/uploads/' . $this->mAsset->mDirname . '/stores_json.txt';
+        $this->jsonCacheFile = XOOPS_ROOT_PATH . '/uploads/' . $this->mAsset->mDirname . '/stores_json%s.txt';
     }
 
     /**
@@ -434,8 +434,20 @@ abstract class Xupdatemaster_AbstractAction
     				'items' => $items
     		);
     	}
-    	$data = json_encode($data);
-    	file_put_contents($this->jsonCacheFile, $data);
+    	
+    	// non version
+    	$_data = json_encode($data);
+    	file_put_contents(sprintf($this->jsonCacheFile, ''), $_data);
+    	
+    	// V1
+    	$this->_setupAccessController('item');
+    	$tree = $this->mAccessController['main']->getTree('view');
+    	$categories = array();
+    	foreach($tree as $obj) {
+    		$categories[$obj->get('cat_id')] = $obj->get('title');
+    	}
+    	$_data = json_encode(array('stores' => $data, 'categories' => $categories));
+    	file_put_contents(sprintf($this->jsonCacheFile, '_V1'), $_data);
     }
     
 	protected function UrlGetContents($url) {
