@@ -88,6 +88,8 @@ class Xupdatemaster_ItemEditAction extends Xupdatemaster_AbstractEditAction
 			$this->mObject->set('category_id', $this->_getCatId());
         }
 		$this->_setupAccessController('item');
+		// load tags for form element
+		$this->mObject->loadTag();
      return true;
     }
 
