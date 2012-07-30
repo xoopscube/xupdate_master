@@ -150,10 +150,10 @@ class Xupdatemaster_ItemEditAction extends Xupdatemaster_AbstractEditAction
 		if($this->mObjectHandler->insert($this->mObject))
 		{
 			$this->makeJsonCache();
-			return XUPDATE_MASTER_FRAME_VIEW_SUCCESS;
+			return XUPDATEMASTER_FRAME_VIEW_SUCCESS;
 		}
 	
-		return XUPDATE_MASTER_FRAME_VIEW_ERROR;
+		return XUPDATEMASTER_FRAME_VIEW_ERROR;
 	}
 }
 ?>
