@@ -84,6 +84,7 @@ class Xupdatemaster_StoreViewAction extends Xupdatemaster_AbstractViewAction
 		
 		$render->setTemplateName($this->mAsset->mDirname . '_store_view.html');
 		$render->setAttribute('object', $this->mObject);
+		$render->setAttribute('isPackage', ($this->mObject->get('contents') == 3));
 		$render->setAttribute('item', $this->getItem($this->mObject));
 		$render->setAttribute('dirname', $this->mAsset->mDirname);
 		$render->setAttribute('dataname', self::DATANAME);

@@ -361,6 +361,9 @@ abstract class Xupdatemaster_AbstractAction
     		$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
     		$isPackage = ($sObj->get('contents') == 3);
     		foreach ($ini as $item) {
+    			if ($isPackage) {
+    				$item['addon_url'] = $this->_getAddonUrl(substr($item['dirname'], 1), $item['target_key']);
+    			}
     			if (isset($exists[$item['target_key']])) {
     				$iobj = $exists[$item['target_key']];
     				$addon_url = $iobj->get('addon_url');
@@ -376,9 +379,6 @@ abstract class Xupdatemaster_AbstractAction
 //    						}
 //    					}
 //    				}
-					if (! isset($item['addon_url'])) {
-						$item['addon_url'] = '';
-					}
     				if ( ! $tagChange
     					&& $item['dirname']    === $iobj->get('title')
     					&& $item['addon_url']  === $iobj->get('addon_url')
@@ -390,14 +390,13 @@ abstract class Xupdatemaster_AbstractAction
     				$iobj->unsetNew();
     				$iobj->assignVar('title', $item['dirname']);
     				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item, $iobj->get('category_id')));
-    				if (! $isPackage) {
+   					$iobj->assignVar('addon_url', $item['addon_url']);
+   					if (! $isPackage) {
 	    				if ($item['target_key'] !== $iobj->get('target_key') || $item['addon_url']  !== $iobj->get('addon_url')) {
 	    					$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
 	    				}
-   						$iobj->assignVar('addon_url', $item['addon_url']);
     				} else {
-    					$iobj->assignVar('approval', 1);
-    					$iobj->assignVar('addon_url', '');
+    					$iobj->assignVar('approval', 0);
     				}
     			} else {
     				$iobj = new $this->iHandler->mClass();
@@ -407,12 +406,11 @@ abstract class Xupdatemaster_AbstractAction
     				$iobj->assignVar('uid', $uid);
     				$iobj->assignVar('store_id', $sObj->get('store_id'));
     				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item));
+    				$iobj->assignVar('addon_url', $item['addon_url']);
     				if (! $isPackage) {
 	    				$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
-	    				$iobj->assignVar('addon_url', $item['addon_url']);
     				} else {
-    					$iobj->assignVar('approval', 1);
-    					$iobj->assignVar('addon_url', '');
+    					$iobj->assignVar('approval', 0);
     				}
     			}
     			$this->iHandler->insert($iobj ,true);
@@ -437,6 +435,18 @@ abstract class Xupdatemaster_AbstractAction
     		}
     	}
     	return $category_id;
+    }
+    
+    private function _getAddonUrl($sid, $target_key) {
+    	$criteria = new CriteriaCompo();
+    	$criteria->add(new Criteria('store_id', $sid));
+    	$criteria->add(new Criteria('target_key', $target_key));
+    	if ($iobj = $this->iHandler->getObjects($criteria)) {
+    		return str_replace('%s', $iobj[0]->get('target_key'), $iobj[0]->get('addon_url'));
+    	} else {
+    		return '';
+    	}
+    	
     }
     
     protected function makeJsonCache() {
