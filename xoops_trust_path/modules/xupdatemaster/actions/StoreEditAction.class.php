@@ -68,7 +68,7 @@ class Xupdatemaster_StoreEditAction extends Xupdatemaster_AbstractEditAction
         $render->setAttribute('dirname', $this->mAsset->mDirname);
         $render->setAttribute('dataname', self::DATANAME);
 
-        $contents_checked = array_pad(array(), 3, '');
+        $contents_checked = array_pad(array(), count($this->mObject->contents_name), '');
         $contents_checked[$this->mObject->get('contents')] = ' checked="checked"';
         $render->setAttribute('contents_checked', $contents_checked);
 

@@ -351,45 +351,72 @@ abstract class Xupdatemaster_AbstractAction
     	} else {
     		$ini = @ parse_ini_string($this->UrlGetContents($url), true);
     	}
-    	$iObj = $this->getItem($sObj);
+    	$iObjs = $this->getItem($sObj);
     	$exists = array();
-    	foreach ($iObj as $id => $obj) {
+    	foreach ($iObjs as $id => $obj) {
     		$target_key = $obj->get('target_key');
     		$exists[$target_key] = $obj;
     	}
-    	
     	if ($ini) {
     		$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
+    		$isPackage = ($sObj->get('contents') == 3);
     		foreach ($ini as $item) {
     			if (isset($exists[$item['target_key']])) {
-    				$oObj = $exists[$item['target_key']];
-    				$addon_url = $oObj->get('addon_url');
+    				$iobj = $exists[$item['target_key']];
+    				$addon_url = $iobj->get('addon_url');
     				unset($exists[$item['target_key']]);
-    				if (   $item['dirname']    === $oObj->get('title')
-    					&& $item['addon_url']  === $oObj->get('addon_url')
-    					&& ((empty($item['category'])? $this->mModuleConfig['default_catid'] : $item['category']) == $oObj->get('category_id')) ) {
+    				$tagChange = false;
+// @Todo tag support
+//    				$iobj->loadTag();
+//    				if (isset($item['tag'])) {
+//   					if ($tags = explode(' ', trim($item['tag']))) {
+//  						if ($newTag = array_diff($tags, $iobj->mTag)) {
+//    							$iobj->mTag = array_merge($iobj->mTag, $newTag);
+//    							$tagChange = true;
+//    						}
+//    					}
+//    				}
+					if (! isset($item['addon_url'])) {
+						$item['addon_url'] = '';
+					}
+    				if ( ! $tagChange
+    					&& $item['dirname']    === $iobj->get('title')
+    					&& $item['addon_url']  === $iobj->get('addon_url')
+    					&& ((empty($item['category'])? $this->mModuleConfig['default_catid'] : $item['category']) == $iobj->get('category_id'))
+    				) {
+    					unset($iobj);
     					continue;
     				}
-    				$iobj = $this->iHandler->get($oObj->get('item_id'));
     				$iobj->unsetNew();
     				$iobj->assignVar('title', $item['dirname']);
-    				$iobj->assignVar('addon_url', $item['addon_url']);
-    				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item, $oObj->get('category_id')));
-    				if ($item['target_key'] !== $oObj->get('target_key') || $item['addon_url']  !== $oObj->get('addon_url')) {
-    					$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
+    				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item, $iobj->get('category_id')));
+    				if (! $isPackage) {
+	    				if ($item['target_key'] !== $iobj->get('target_key') || $item['addon_url']  !== $iobj->get('addon_url')) {
+	    					$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
+	    				}
+   						$iobj->assignVar('addon_url', $item['addon_url']);
+    				} else {
+    					$iobj->assignVar('approval', 1);
+    					$iobj->assignVar('addon_url', '');
     				}
     			} else {
     				$iobj = new $this->iHandler->mClass();
     				$iobj->setNew();
     				$iobj->assignVar('title', $item['dirname']);
     				$iobj->assignVar('target_key', $item['target_key']);
-    				$iobj->assignVar('store_id', $sObj->get('store_id'));
-    				$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
-    				$iobj->assignVar('addon_url', $item['addon_url']);
     				$iobj->assignVar('uid', $uid);
+    				$iobj->assignVar('store_id', $sObj->get('store_id'));
     				$iobj->assignVar('category_id', $this->_getCategoryIdByIni($item));
+    				if (! $isPackage) {
+	    				$iobj->assignVar('approval', $this->isAdmin? 1 : 0);
+	    				$iobj->assignVar('addon_url', $item['addon_url']);
+    				} else {
+    					$iobj->assignVar('approval', 1);
+    					$iobj->assignVar('addon_url', '');
+    				}
     			}
     			$this->iHandler->insert($iobj ,true);
+    			unset($iobj);
     		}
     	}
     	if ($exists) {

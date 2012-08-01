@@ -21,7 +21,8 @@ class Xupdatemaster_StoreObject extends Legacy_AbstractObject
     public $contents_name = array(
     		0 => 'disabled',
     		1 => 'module',
-    		2 => 'theme' );
+    		2 => 'theme',
+    		3 => 'package' );
     
     /**
      * __construct
