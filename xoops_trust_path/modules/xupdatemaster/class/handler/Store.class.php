@@ -22,7 +22,8 @@ class Xupdatemaster_StoreObject extends Legacy_AbstractObject
     		0 => 'disabled',
     		1 => 'module',
     		2 => 'theme',
-    		3 => 'package' );
+    		3 => 'package',
+    		4 => 'preload' );
     
     /**
      * __construct
