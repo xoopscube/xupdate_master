@@ -327,7 +327,7 @@ abstract class Xupdatemaster_AbstractAction
     			$uid = $sObj->get('uid');
     			$user =& $userHandler->get($uid);
     			$this->isAdmin = $user->isAdmin($mid);
-    			$this->setItem($sObj, false);
+    			$this->setItem($sObj, false, $uid);
     			$user = null;
     		}
     		$this->isAdmin = $_isAdmin;
@@ -344,7 +344,7 @@ abstract class Xupdatemaster_AbstractAction
     	return $iObj;
     }
     
-    protected function setItem($sObj, $makeCache = true) {
+    protected function setItem($sObj, $makeCache = true, $uid = null) {
     	$url = $sObj->get('addon_url');
     	$data = $this->UrlGetContents($url);
     	if ($data === false) {
@@ -362,7 +362,9 @@ abstract class Xupdatemaster_AbstractAction
     		$exists[$target_key] = $obj;
     	}
     	if ($ini) {
-    		$uid = $this->mRoot->mContext->mXoopsUser->get('uid');
+    		if (is_null($uid)) {
+    			$uid = is_object($this->mRoot->mContext->mXoopsUser)? $this->mRoot->mContext->mXoopsUser->get('uid') : 0;
+    		}
     		$isPackage = ($sObj->get('contents') == 3);
     		foreach ($ini as $item) {
     			if ($isPackage) {
