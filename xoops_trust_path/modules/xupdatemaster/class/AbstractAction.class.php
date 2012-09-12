@@ -346,10 +346,14 @@ abstract class Xupdatemaster_AbstractAction
     
     protected function setItem($sObj, $makeCache = true) {
     	$url = $sObj->get('addon_url');
+    	$data = $this->UrlGetContents($url);
+    	if ($data === false) {
+    		return;
+    	}
     	if (preg_match('/\bjson\b/i', $url)) {
-    		$ini = @ json_decode($this->UrlGetContents($url), true);
+    		$ini = @ json_decode($data, true);
     	} else {
-    		$ini = @ parse_ini_string($this->UrlGetContents($url), true);
+    		$ini = @ parse_ini_string($data, true);
     	}
     	$iObjs = $this->getItem($sObj);
     	$exists = array();
@@ -500,6 +504,10 @@ abstract class Xupdatemaster_AbstractAction
 			curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			$data = curl_exec($ch);
+			$rc = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			if ($rc != 200 && $rc != 404) {
+				$data = false;
+			}
 			curl_close($ch);
 		}
 		return $data;
