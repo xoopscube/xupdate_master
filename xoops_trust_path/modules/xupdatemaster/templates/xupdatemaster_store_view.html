@@ -15,7 +15,7 @@
 </dl>
 
 <{if count($item) > 0}>
-<div style="clear:both">
+<div style="clear:both; font-size:14px;">
   <{if $isAdmin}>
   <form action="<{xoops_cooluri dirname=$dirname dataname=store action=view}>" method="post">
   <{/if}>
@@ -32,7 +32,7 @@
           <{$smarty.const._MD_XUPDATEMASTER_LANG_CATEGORY_ID}>
         </th>
         <th>
-          <{$smarty.const._MD_XUPDATEMASTER_LANG_APPROVAL}>
+          OK
         </th>
       </tr>
     </thead>
@@ -42,7 +42,7 @@
           <td><{$obj->getShow('target_key')}></td>
           <td><a href="<{$obj->getShow('addon_url')|replace:'%s':$obj->getShow('target_key')}>"><span class="url"><{$obj->getShow('addon_url')|replace:'%s':$obj->getShow('target_key')}></span></a></td>
           <{if !$isPackage}>
-          <td><{if $isAdmin}><select name="category_id_<{$obj->getShow('item_id')}>"><{legacy_category_select tree=$accessController->getTree('post') selectedValue=$obj->getShow('category_id')}></select><{else}><{$accessController->getTitle($obj->getShow('category_id'))}><{/if}></td>
+          <td><{if $isAdmin}><select style="max-width:10em;" name="category_id_<{$obj->getShow('item_id')}>"><{legacy_category_select tree=$accessController->getTree('post') selectedValue=$obj->getShow('category_id')}></select><{else}><{$accessController->getTitle($obj->getShow('category_id'))}><{/if}></td>
           <td><{if $isAdmin}><input type="checkbox" name="approval[]" value="<{$obj->getShow('item_id')}>"<{if $obj->getShow('approval')}> checked="checked"<{/if}>><{else}><{$obj->getShow('approval')}><{/if}></td>
           <{else}>
           <td> - </td><td> - </td>
