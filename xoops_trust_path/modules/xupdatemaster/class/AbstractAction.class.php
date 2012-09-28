@@ -388,7 +388,7 @@ abstract class Xupdatemaster_AbstractAction
     				if ( ! $tagChange
     					&& $item['dirname']    === $iobj->get('title')
     					&& $item['addon_url']  === $iobj->get('addon_url')
-    					&& ((empty($item['category'])? $this->mModuleConfig['default_catid'] : $item['category']) == $iobj->get('category_id'))
+    					&& (empty($item['category']) || $item['category'] == $iobj->get('category_id'))
     				) {
     					unset($iobj);
     					continue;
