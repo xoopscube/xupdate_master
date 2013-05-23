@@ -376,9 +376,11 @@ abstract class Xupdatemaster_AbstractAction
     		}
     		$isPackage = ($sObj->get('contents') == 3);
     		foreach ($ini as $item) {
+    			if (empty($item['dirname']) || empty($item['target_key'])) continue;
     			if ($isPackage) {
     				$item['addon_url'] = $this->_getAddonUrl(substr($item['dirname'], 1), $item['target_key']);
     			}
+    			if (empty($item['addon_url'])) continue;
     			if (isset($exists[$item['target_key']])) {
     				$iobj = $exists[$item['target_key']];
     				$addon_url = $iobj->get('addon_url');
