@@ -349,6 +349,8 @@ abstract class Xupdatemaster_AbstractAction
     	$sid = $sObj->get('store_id');
     	$criteria = new CriteriaCompo();
     	$criteria->add(new Criteria('store_id', $sid));
+    	$criteria->setSort('title');
+    	$criteria->setOrder('ASC');
     	$iObj = $this->iHandler->getObjects($criteria);
     	return $iObj;
     }

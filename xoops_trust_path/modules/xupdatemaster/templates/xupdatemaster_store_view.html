@@ -23,7 +23,7 @@
     <thead>
       <tr>
         <th>
-          <{$smarty.const._MD_XUPDATEMASTER_LANG_TARGET_KEY}>
+          <{$smarty.const._MD_XUPDATEMASTER_LANG_TITLE}>
         </th>
         <th>
           <{$smarty.const._MD_XUPDATEMASTER_LANG_ADDON_URL}>
@@ -39,7 +39,7 @@
     <tbody>
       <{foreach item=obj from=$item}>
         <tr class="<{cycle values='odd,even'}>">
-          <td><{$obj->getShow('target_key')}></td>
+          <td><{$obj->getShow('title')}></td>
           <td><a href="<{$obj->getShow('addon_url')|replace:'%s':$obj->getShow('target_key')}>"><span class="url"><{$obj->getShow('addon_url')|replace:'%s':$obj->getShow('target_key')}></span></a></td>
           <{if !$isPackage}>
           <td><{if $isAdmin}><select style="max-width:10em;" name="category_id_<{$obj->getShow('item_id')}>"><{legacy_category_select tree=$accessController->getTree('post') selectedValue=$obj->getShow('category_id')}></select><{else}><{$accessController->getTitle($obj->getShow('category_id'))}><{/if}></td>
