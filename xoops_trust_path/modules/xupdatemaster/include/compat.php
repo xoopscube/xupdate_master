@@ -35,10 +35,13 @@ if(!function_exists('parse_ini_string')){
 				continue;
 			 
 			$tmp = explode("=", $line, 2);
-			if($ProcessSections && $inSect)
-				$return[$inSect][trim($tmp[0])] = ltrim($tmp[1]);
-			else
-				$return[trim($tmp[0])] = ltrim($tmp[1]);
+			$key = trim($tmp[0]);
+			if ($key) {
+				if($ProcessSections && $inSect)
+					$return[$inSect][$key] = ltrim($tmp[1]);
+				else
+					$return[$key] = ltrim($tmp[1]);
+			}
 		}
 		return $return;
 	}
