@@ -34,13 +34,18 @@ if(!function_exists('parse_ini_string')){
 			if(!strpos($line, '=')) // (We don't use "=== false" because value 0 is not valid as well)
 				continue;
 			 
-			$tmp = explode("=", $line, 2);
+			$tmp = explode('=', $line, 2);
 			$key = trim($tmp[0]);
+			
+			if (preg_match('/[?{}|&~!\[()^"]/', $key)) continue;
+			
 			if ($key) {
+				$val = ltrim($tmp[1]);
+				$val = preg_replace('/^"(.*)"$/', '$1', $val);
 				if($ProcessSections && $inSect)
-					$return[$inSect][$key] = ltrim($tmp[1]);
+					$return[$inSect][$key] = $val;
 				else
-					$return[$key] = ltrim($tmp[1]);
+					$return[$key] = $val;
 			}
 		}
 		return $return;
