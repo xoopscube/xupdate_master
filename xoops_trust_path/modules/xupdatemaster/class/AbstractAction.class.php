@@ -375,12 +375,15 @@ abstract class Xupdatemaster_AbstractAction
     			$uid = is_object($this->mRoot->mContext->mXoopsUser)? $this->mRoot->mContext->mXoopsUser->get('uid') : 0;
     		}
     		$isPackage = ($sObj->get('contents') == 3);
+    		$noStrReg = '/[^#a-zA-Z0-9_-]$/';
+    		$urlReg = '#^https?://#i';
     		foreach ($ini as $item) {
-    			if (empty($item['dirname']) || empty($item['target_key'])) continue;
+    			if (preg_match($noStrReg, @$item['dirname']) || preg_match($noStrReg, @$item['target_key'])) continue;
     			if ($isPackage) {
     				$item['addon_url'] = $this->_getAddonUrl(substr($item['dirname'], 1), $item['target_key']);
+    			} else {
+    				if (! preg_match($urlReg, @$item['addon_url']) ) continue;
     			}
-    			if (empty($item['addon_url'])) continue;
     			if (isset($exists[$item['target_key']])) {
     				$iobj = $exists[$item['target_key']];
     				$addon_url = $iobj->get('addon_url');
@@ -526,5 +529,3 @@ abstract class Xupdatemaster_AbstractAction
 		return $data;
 	}
 }
-
-?>
