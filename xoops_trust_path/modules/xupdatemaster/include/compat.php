@@ -31,8 +31,10 @@ if(!function_exists('parse_ini_string')){
 				$inSect = substr($line, 1, $endIdx-1);
 				continue;
 			}
-			if(!strpos($line, '=')) // (We don't use "=== false" because value 0 is not valid as well)
-				continue;
+			if(!strpos($line, '=')) {// (We don't use "=== false" because value 0 is not valid as well)
+				$return = false;
+				break;
+			}
 			 
 			$tmp = explode('=', $line, 2);
 			$key = trim($tmp[0]);
@@ -43,7 +45,7 @@ if(!function_exists('parse_ini_string')){
 				$arrayKey = $_match[2];
 			}
 			
-			if (preg_match('/[?{}|&~!\[()^"]/', $key)) continue;
+			if (preg_match('/[?{}|&~!\[()\^"]/', $key)) continue;
 			
 			if ($key) {
 				$val = ltrim($tmp[1]);
